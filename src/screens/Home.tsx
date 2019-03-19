@@ -59,7 +59,7 @@ export default class Home extends React.Component<Props, State> {
       console.log(error);
     }
 
-    //import current clock in/out
+    //import current clock in/out from storage
 
 
 
@@ -73,25 +73,25 @@ export default class Home extends React.Component<Props, State> {
   async buttonChange() {
 
     //if button is currently IN, change to OUT
-    if(this.state.buttonPressed == "true") {
+    if (this.state.buttonPressed == "true") {
       try {
         await AsyncStorage.setItem('buttonPressed', "false");
-        
-       } catch (error) {
-         // Error retrieving data
-         console.log(error);
-       }
+
+      } catch (error) {
+        // Error retrieving data
+        console.log(error);
+      }
 
     } else {
       try {
         await AsyncStorage.setItem('buttonPressed', "true");
-        
-       } catch (error) {
-         // Error retrieving data
-         console.log(error);
-       }
+
+      } catch (error) {
+        // Error retrieving data
+        console.log(error);
+      }
     }
-    
+
   }
 
   render() {
@@ -99,6 +99,7 @@ export default class Home extends React.Component<Props, State> {
       <View style={styles.container}>
         <View style={styles.alignSelf}>
 
+          {/* so my image can be clicked on */}
           <TouchableHighlight onPress={() => this.buttonChange()}>
 
             <ImageBackground
@@ -107,7 +108,7 @@ export default class Home extends React.Component<Props, State> {
                 height: 300,
                 flex: 1,
               }}
-              source= {{uri: "../../images/in.png"}}>
+              source={{ uri: "../../images/in.png" }}>
               <Text style={styles.inOutTexts}>IN</Text>
 
               <Text style={styles.timeTexts}>HH:MM</Text>
