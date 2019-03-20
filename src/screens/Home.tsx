@@ -1,11 +1,11 @@
 
 import * as React from 'react';
-import { StyleSheet, Text, View, ImageBackground, TouchableHighlight } from 'react-native';
-import AsyncStorage from '@react-native-community/async-storage';
-import { NavigationScreenOptions } from 'react-navigation';
-import { ListItem } from 'react-native-elements';
+import { AsyncStorage, StyleSheet, Text, View, TouchableHighlight } from 'react-native';
+import { Image } from 'react-native-elements';
+
 interface Props { }
 interface State {
+  uri: string,
   buttonPressed: string,
   theme: string,
   times: {
@@ -15,14 +15,11 @@ interface State {
 
 export default class Home extends React.Component<Props, State> {
 
-  static navigationOptions: NavigationScreenOptions = {
-    headerTitle: "Blogs"
-  };
-
   constructor(props: Props) {
     super(props);
 
     this.state = {
+      uri: "../../images/in.png",
       buttonPressed: 'false',
       theme: 'black',
       times: [
@@ -31,6 +28,22 @@ export default class Home extends React.Component<Props, State> {
         },
         {
           name: 'Time2',
+        },
+        {
+          name: 'Time31',
+        },
+        {
+          name: 'Time41',
+        },
+
+        {
+          name: 'Time52',
+        },
+        {
+          name: 'Time62',
+        },
+        {
+          name: 'Time72',
         },
       ],
     }
@@ -62,12 +75,7 @@ export default class Home extends React.Component<Props, State> {
     //import current clock in/out from storage
 
 
-
-
   };
-
-
-
 
 
   async buttonChange() {
@@ -94,38 +102,38 @@ export default class Home extends React.Component<Props, State> {
 
   }
 
+
+
   render() {
+
     return (
       <View style={styles.container}>
         <View style={styles.alignSelf}>
 
           {/* so my image can be clicked on */}
-          <TouchableHighlight onPress={() => this.buttonChange()}>
+          <TouchableHighlight> onPress={() => this.buttonChange()}>
 
-            <ImageBackground
+            <Text style={styles.inOutTexts}>IN</Text>
+
+            <Text style={styles.timeTexts}>HH:MM</Text>
+
+            <Image
               style={{
                 width: 300,
                 height: 300,
                 flex: 1,
               }}
-              source={{ uri: "../../images/in.png" }}>
-              <Text style={styles.inOutTexts}>IN</Text>
+              source={{ uri: this.state.uri }}>
 
-              <Text style={styles.timeTexts}>HH:MM</Text>
-
-            </ImageBackground>
+            </Image>
           </TouchableHighlight>
         </View>
-        <View>
-          {
-            this.state.times.map((l) => (
-              <ListItem
-                key={l.name}
-                title={l.name}
-              />
-            ))
-          }
-        </View>
+        {
+          this.state.times.forEach((l) => (
+            <Text
+              style={styles.texts}>{l.name}</Text>
+          ))
+        }
       </View>
 
 
@@ -147,11 +155,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#ff0000',
   },
   texts: {
+
+    margin: 0,
     fontSize: 20,
-    marginTop: 1,
     borderColor: 'black',
-    marginBottom: 1,
     color: 'white',
+    backgroundColor: 'red',
     textShadowColor: 'rgba(0, 0, 0, 0.75)',
     textShadowOffset: { width: -1, height: 1 },
     textShadowRadius: 10,
@@ -174,8 +183,14 @@ const styles = StyleSheet.create({
     marginBottom: 0,
     color: 'white',
   },
+  heights: {
+    height: 100,
+    padding: 0,
+    margin: 0,
+  },
   alignSelf: {
-    flex: 2,
+    marginTop: 50,
+    flex: 1,
     alignSelf: "center",
   }
 })
