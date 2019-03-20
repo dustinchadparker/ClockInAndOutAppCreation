@@ -1,11 +1,12 @@
-
 import * as React from 'react';
-import { AsyncStorage, StyleSheet, Text, View, TouchableHighlight } from 'react-native';
-import { Image } from 'react-native-elements';
+import { Image, AsyncStorage, StyleSheet, Text, View, TouchableHighlight } from 'react-native';
+
 
 interface Props { }
 interface State {
+  seconds: number,
   uri: string,
+  inOut: string,
   buttonPressed: string,
   theme: string,
   times: {
@@ -19,32 +20,16 @@ export default class Home extends React.Component<Props, State> {
     super(props);
 
     this.state = {
+      seconds: 0,
       uri: "../../images/in.png",
-      buttonPressed: 'false',
+      buttonPressed: 'true',
+      inOut: 'IN',
       theme: 'black',
       times: [
         {
           name: 'Time1',
         },
-        {
-          name: 'Time2',
-        },
-        {
-          name: 'Time31',
-        },
-        {
-          name: 'Time41',
-        },
 
-        {
-          name: 'Time52',
-        },
-        {
-          name: 'Time62',
-        },
-        {
-          name: 'Time72',
-        },
       ],
     }
 
@@ -78,12 +63,13 @@ export default class Home extends React.Component<Props, State> {
   };
 
 
-  async buttonChange() {
+  buttonChange = () => {
 
     //if button is currently IN, change to OUT
     if (this.state.buttonPressed == "true") {
       try {
-        await AsyncStorage.setItem('buttonPressed', "false");
+        AsyncStorage.setItem('buttonPressed', "false");
+        this.setState({ buttonPressed: "false", inOut: "IN", seconds: 0 });
 
       } catch (error) {
         // Error retrieving data
@@ -92,8 +78,10 @@ export default class Home extends React.Component<Props, State> {
 
     } else {
       try {
-        await AsyncStorage.setItem('buttonPressed', "true");
 
+        AsyncStorage.setItem('buttonPressed', "true");
+        this.setState({ buttonPressed: "true", inOut: "OUT" })
+        this.timerStart();
       } catch (error) {
         // Error retrieving data
         console.log(error);
@@ -102,7 +90,33 @@ export default class Home extends React.Component<Props, State> {
 
   }
 
+  timerStart = () => {
+    setInterval(() => this.setState({ seconds: this.state.seconds + 1 }), 1000);
 
+  }
+
+  renderButton = () => {
+
+    let imageSrc = require('../../images/out.png');
+
+    if (this.state.buttonPressed == "false") {
+      imageSrc = require('../../images/in.png');
+    }
+
+    return (
+      <Image
+        style={{
+          width: 300,
+          height: 300,
+          flex: 1,
+          position: 'absolute',
+          alignSelf: 'center',
+        }}
+        source={imageSrc}>
+
+      </Image>
+    )
+  }
 
   render() {
 
@@ -110,33 +124,24 @@ export default class Home extends React.Component<Props, State> {
       <View style={styles.container}>
         <View style={styles.alignSelf}>
 
-          {/* so my image can be clicked on */}
-          <TouchableHighlight> onPress={() => this.buttonChange()}>
+          {/* so image can be clicked on */}
+          <TouchableHighlight onPress={() => this.buttonChange()}>
 
-            <Text style={styles.inOutTexts}>IN</Text>
+            <View>
+              <Text style={styles.inOutTexts}>{this.state.inOut}</Text>
+              <Text style={styles.timeTexts}>{this.state.seconds}</Text>
 
-            <Text style={styles.timeTexts}>HH:MM</Text>
-
-            <Image
-              style={{
-                width: 300,
-                height: 300,
-                flex: 1,
-              }}
-              source={{ uri: this.state.uri }}>
-
-            </Image>
+              {this.renderButton()}
+            </View>
           </TouchableHighlight>
         </View>
         {
-          this.state.times.forEach((l) => (
+          this.state.times.map((l) => (
             <Text
               style={styles.texts}>{l.name}</Text>
           ))
         }
       </View>
-
-
     );
   }
 }
@@ -168,7 +173,7 @@ const styles = StyleSheet.create({
   },
   timeTexts: {
     fontSize: 30,
-    zIndex: 3,
+    zIndex: 2,
 
 
     alignSelf: "center",
@@ -177,7 +182,7 @@ const styles = StyleSheet.create({
   },
   inOutTexts: {
     fontSize: 80,
-    zIndex: 3,
+    zIndex: 2,
     marginTop: 80,
     alignSelf: "center",
     marginBottom: 0,
